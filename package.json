@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
 	"name": "my-todo-app",
+=======
+	"name": "test-icy-9-22",
+>>>>>>> 8963f53be86fe25c61b883a06f462be053fb9eea
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -9,15 +13,22 @@
 		"lint": "next lint",
 		"pages:build": "npx @cloudflare/next-on-pages",
 		"preview": "npm run pages:build && wrangler pages dev",
+<<<<<<< HEAD
 		"deploy": "npm run pages:build && wrangler pages deploy",
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./env.d.ts"
 	},
 	"dependencies": {
 		"framer-motion": "^12.23.19",
+=======
+		"deploy": "npm run pages:build && wrangler pages deploy"
+	},
+	"dependencies": {
+>>>>>>> 8963f53be86fe25c61b883a06f462be053fb9eea
 		"react": "19.1.0",
 		"react-dom": "19.1.0"
 	},
 	"devDependencies": {
+<<<<<<< HEAD
 		"@cloudflare/next-on-pages": "1",
 		"@tailwindcss/postcss": "^4",
 		"@types/node": "^20",
@@ -26,6 +37,11 @@
 		"next": "15.4.6",
 		"tailwindcss": "^4",
 		"typescript": "^5",
+=======
+		"@tailwindcss/postcss": "^4",
+		"next": "15.4.6",
+		"tailwindcss": "^4",
+>>>>>>> 8963f53be86fe25c61b883a06f462be053fb9eea
 		"vercel": "47.0.4",
 		"wrangler": "^4.38.0"
 	}

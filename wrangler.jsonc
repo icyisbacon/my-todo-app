@@ -4,7 +4,11 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
+<<<<<<< HEAD
 	"name": "my-todo-app",
+=======
+	"name": "test-icy-9-22",
+>>>>>>> 8963f53be86fe25c61b883a06f462be053fb9eea
 	"compatibility_date": "2025-09-22",
 	"compatibility_flags": [
 		"nodejs_compat"
