@@ -1,48 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-interface Todo {
-  id: number;
-  text: string;
-  completed: boolean;
-}
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Home() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [inputValue, setInputValue] = useState("");
-
-  const addTodo = () => {
-    if (inputValue.trim()) {
-      const newTodo: Todo = {
-        id: Date.now(),
-        text: inputValue.trim(),
-        completed: false,
-      };
-      setTodos([...todos, newTodo]);
-      setInputValue("");
-    }
-  };
-
-  const toggleTodo = (id: number) => {
-    setTodos(todos.map(todo => 
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ));
-  };
-
-  const deleteTodo = (id: number) => {
-    setTodos(todos.filter(todo => todo.id !== id));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      addTodo();
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -83,172 +46,76 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative z-10 max-w-2xl mx-auto">
+      <div className="relative z-10 text-center">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-8"
+          className="mb-12"
         >
-          <h1 className="text-6xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-4 drop-shadow-2xl">
-            ✨ NEON TODO ✨
+          <h1 className="text-7xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-6 drop-shadow-2xl">
+            ✨ Welcome ✨
           </h1>
-          <p className="text-xl text-cyan-200 font-light">
-            Add some sparkle to your tasks! 🌟
+          <p className="text-2xl text-cyan-200 font-light mb-8">
+            Your productivity journey starts here! 🚀
           </p>
         </motion.div>
 
-        {/* Input Section */}
+        {/* Navigation Button */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-8"
+          transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <div className="flex gap-4">
-            <motion.input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="What needs to be done? ✨"
-              className="flex-1 px-6 py-4 text-lg bg-black/30 backdrop-blur-sm border-2 border-cyan-400 rounded-2xl text-white placeholder-cyan-300 focus:outline-none focus:border-pink-400 focus:shadow-[0_0_30px_rgba(236,72,153,0.5)] transition-all duration-300"
-              whileFocus={{ scale: 1.02 }}
-            />
+          <Link href="/todos">
             <motion.button
-              onClick={addTodo}
-              className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-2xl shadow-[0_0_20px_rgba(236,72,153,0.5)] hover:shadow-[0_0_30px_rgba(236,72,153,0.8)] transition-all duration-300"
+              className="px-12 py-6 text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-600 to-cyan-500 text-white rounded-3xl shadow-[0_0_30px_rgba(236,72,153,0.5)] hover:shadow-[0_0_40px_rgba(236,72,153,0.8)] transition-all duration-300 border-2 border-transparent hover:border-white/20"
               whileHover={{ 
                 scale: 1.05,
-                boxShadow: "0 0 40px rgba(236,72,153,1)"
+                boxShadow: "0 0 50px rgba(236,72,153,1)"
               }}
               whileTap={{ scale: 0.95 }}
             >
-              ADD
+              🎯 Start Todo App
             </motion.button>
-          </div>
+          </Link>
         </motion.div>
 
-        {/* Todo List */}
+        {/* Features */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="space-y-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
         >
-          <AnimatePresence>
-            {todos.map((todo, index) => (
-              <motion.div
-                key={todo.id}
-                initial={{ opacity: 0, x: -100, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 100, scale: 0.8 }}
-                transition={{ 
-                  duration: 0.5,
-                  delay: index * 0.1,
-                  type: "spring",
-                  stiffness: 100
-                }}
-                className="group"
-              >
-                <div className="flex items-center gap-4 p-4 bg-black/20 backdrop-blur-sm border-2 border-transparent rounded-2xl hover:border-cyan-400/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]">
-                  <motion.button
-                    onClick={() => toggleTodo(todo.id)}
-                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
-                      todo.completed
-                        ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-400 shadow-[0_0_15px_rgba(34,197,94,0.5)]"
-                        : "border-cyan-400 hover:border-pink-400 hover:shadow-[0_0_15px_rgba(236,72,153,0.3)]"
-                    }`}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    {todo.completed && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="text-white text-lg"
-                      >
-                        ✓
-                      </motion.span>
-                    )}
-                  </motion.button>
-                  
-                  <motion.span
-                    className={`flex-1 text-lg transition-all duration-300 ${
-                      todo.completed
-                        ? "line-through text-gray-400"
-                        : "text-white"
-                    }`}
-                    animate={{
-                      color: todo.completed ? "#9CA3AF" : "#FFFFFF"
-                    }}
-                  >
-                    {todo.text}
-                  </motion.span>
-                  
-                  <motion.button
-                    onClick={() => deleteTodo(todo.id)}
-                    className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-pink-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)]"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    ×
-                  </motion.button>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="p-6 bg-black/20 backdrop-blur-sm border border-cyan-400/30 rounded-2xl"
+          >
+            <div className="text-4xl mb-4">✨</div>
+            <h3 className="text-xl font-bold text-cyan-300 mb-2">Beautiful Design</h3>
+            <p className="text-gray-300">Modern UI with stunning animations</p>
+          </motion.div>
+          
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="p-6 bg-black/20 backdrop-blur-sm border border-pink-400/30 rounded-2xl"
+          >
+            <div className="text-4xl mb-4">⚡</div>
+            <h3 className="text-xl font-bold text-pink-300 mb-2">Fast & Smooth</h3>
+            <p className="text-gray-300">Lightning-fast interactions</p>
+          </motion.div>
+          
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="p-6 bg-black/20 backdrop-blur-sm border border-purple-400/30 rounded-2xl"
+          >
+            <div className="text-4xl mb-4">🎯</div>
+            <h3 className="text-xl font-bold text-purple-300 mb-2">Stay Focused</h3>
+            <p className="text-gray-300">Organize your tasks efficiently</p>
+          </motion.div>
         </motion.div>
-
-        {/* Empty state */}
-        {todos.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-center py-12"
-          >
-            <div className="text-6xl mb-4">🎯</div>
-            <p className="text-xl text-cyan-200">
-              No tasks yet! Add one above to get started! ✨
-            </p>
-          </motion.div>
-        )}
-
-        {/* Stats */}
-        {todos.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="mt-8 text-center"
-          >
-            <div className="inline-flex gap-6 px-6 py-4 bg-black/20 backdrop-blur-sm border border-cyan-400/30 rounded-2xl">
-              <div className="text-cyan-300">
-                <span className="text-2xl font-bold text-pink-400">
-                  {todos.length}
-                </span>
-                <br />
-                <span className="text-sm">Total</span>
-              </div>
-              <div className="text-cyan-300">
-                <span className="text-2xl font-bold text-green-400">
-                  {todos.filter(t => t.completed).length}
-                </span>
-                <br />
-                <span className="text-sm">Done</span>
-              </div>
-              <div className="text-cyan-300">
-                <span className="text-2xl font-bold text-yellow-400">
-                  {todos.filter(t => !t.completed).length}
-                </span>
-                <br />
-                <span className="text-sm">Pending</span>
-              </div>
-            </div>
-          </motion.div>
-        )}
       </div>
     </div>
   );
