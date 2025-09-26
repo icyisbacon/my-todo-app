@@ -1,0 +1,12 @@
+name = "my-todo-app"
+type = "javascript"
+
+account_id = " b79b007c7985ce195d435401fd39915b"
+workers_dev = false
+route = ""
+zone_id = ""
+
+[[kv_namespaces]]
+binding = "TODO_KV"
+id = "67987aefad7249b3a84cc189b42d83fe"
+preview_id = "67987aefad7249b3a84cc189b42d83fe"
