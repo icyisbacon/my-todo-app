@@ -1,44 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 export default function TodosPage() {
-  // Initialize with 5 placeholder todos
-  const [todos, setTodos] = useState([
-    { id: 1, text: "🎯 Plan your day and set priorities", completed: false, createdAt: new Date() },
-    { id: 2, text: "☕ Take a coffee break and relax", completed: false, createdAt: new Date() },
-    { id: 3, text: "💻 Work on your coding project", completed: false, createdAt: new Date() },
-    { id: 4, text: "📚 Read a chapter of your favorite book", completed: false, createdAt: new Date() },
-    { id: 5, text: "🏃‍♂️ Go for a refreshing walk outside", completed: false, createdAt: new Date() },
-  ]);
+  // Persisted state loaded from KV via /api/todo
+  const [todos, setTodos] = useState([]);
   
   const [inputValue, setInputValue] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
 
-  const addTodo = () => {
-    if (inputValue.trim()) {
-      const newTodo = {
-        id: Date.now(),
-        text: inputValue.trim(),
-        completed: false,
-        createdAt: new Date(),
-      };
-      setTodos([newTodo, ...todos]);
+  const addTodo = async () => {
+    const text = inputValue.trim();
+    if (!text) return;
+    const res = await fetch("/api/todo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setTodos(data.todos || []);
       setInputValue("");
     }
   };
 
-  const toggleTodo = (id) => {
-    setTodos(todos.map(todo => 
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ));
+  const toggleTodo = async (id) => {
+    const target = todos.find(t => t.id === id);
+    if (!target) return;
+    const res = await fetch("/api/todo", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, completed: !target.completed })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setTodos(data.todos || []);
+    }
   };
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id));
+  const deleteTodo = async (id) => {
+    const res = await fetch(`/api/todo?id=${id}`, { method: "DELETE" });
+    if (res.ok) {
+      const data = await res.json();
+      setTodos(data.todos || []);
+    }
   };
 
   const startEdit = (todo) => {
@@ -46,11 +54,17 @@ export default function TodosPage() {
     setEditValue(todo.text);
   };
 
-  const saveEdit = () => {
-    if (editValue.trim() && editingId) {
-      setTodos(todos.map(todo => 
-        todo.id === editingId ? { ...todo, text: editValue.trim() } : todo
-      ));
+  const saveEdit = async () => {
+    const text = editValue.trim();
+    if (!text || !editingId) return;
+    const res = await fetch("/api/todo", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: editingId, text })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setTodos(data.todos || []);
       setEditingId(null);
       setEditValue("");
     }
@@ -74,6 +88,18 @@ export default function TodosPage() {
       cancelEdit();
     }
   };
+
+  // Load todos on mount
+  React.useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch("/api/todo");
+        const data = await res.json();
+        setTodos(Array.isArray(data) ? data : (data.todos || []));
+      } catch {}
+    };
+    load();
+  }, []);
 
   const completedCount = todos.filter(t => t.completed).length;
   const totalCount = todos.length;
@@ -283,7 +309,7 @@ export default function TodosPage() {
                       </motion.div>
                     )}
                     <div className="text-xs text-gray-400 mt-1">
-                      {todo.createdAt.toLocaleTimeString()}
+                      {new Date(todo.createdAt || Date.now()).toLocaleTimeString()}
                     </div>
                   </div>
                   
