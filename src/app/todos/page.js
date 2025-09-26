@@ -93,10 +93,15 @@ export default function TodosPage() {
   React.useEffect(() => {
     const load = async () => {
       try {
+        console.log("Loading todos from /api/todo...");
         const res = await fetch("/api/todo");
+        console.log("API response status:", res.status);
         const data = await res.json();
+        console.log("API response data:", data);
         setTodos(Array.isArray(data) ? data : (data.todos || []));
-      } catch {}
+      } catch (error) {
+        console.error("Error loading todos:", error);
+      }
     };
     load();
   }, []);

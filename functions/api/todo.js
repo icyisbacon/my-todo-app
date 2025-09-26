@@ -1,12 +1,22 @@
 // GET request -> fetch todos from KV
 export async function onRequestGet(context) {
-  const todos = await context.env.TODO_KV.get("todos", { type: "json" });
-  return new Response(JSON.stringify(todos || []), {
-    headers: { 
-      "Content-Type": "application/json",
-      "Cache-Control": "no-store, no-cache, must-revalidate"
-    }
-  });
+  try {
+    console.log("GET /api/todo - KV binding available:", !!context.env.TODO_KV);
+    const todos = await context.env.TODO_KV.get("todos", { type: "json" });
+    console.log("GET /api/todo - Retrieved todos:", todos);
+    return new Response(JSON.stringify(todos || []), {
+      headers: { 
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, no-cache, must-revalidate"
+      }
+    });
+  } catch (error) {
+    console.error("GET /api/todo - Error:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
 }
 
 // POST request -> add a todo to KV
