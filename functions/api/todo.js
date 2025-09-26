@@ -1,7 +1,12 @@
 // GET request -> fetch todos from KV
 export async function onRequestGet(context) {
   const todos = await context.env.TODO_KV.get("todos", { type: "json" });
-  return Response.json(todos || []);
+  return new Response(JSON.stringify(todos || []), {
+    headers: { 
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store, no-cache, must-revalidate"
+    }
+  });
 }
 
 // POST request -> add a todo to KV
@@ -22,7 +27,12 @@ export async function onRequestPost(context) {
   todos = [newTodo, ...todos];
 
   await context.env.TODO_KV.put("todos", JSON.stringify(todos));
-  return Response.json({ success: true, todo: newTodo, todos });
+  return new Response(JSON.stringify({ success: true, todo: newTodo, todos }), {
+    headers: { 
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store, no-cache, must-revalidate"
+    }
+  });
 }
 
 // PUT request -> update an existing todo (text/completed)
@@ -52,7 +62,12 @@ export async function onRequestPut(context) {
   }
 
   await context.env.TODO_KV.put("todos", JSON.stringify(todos));
-  return Response.json({ success: true, todos });
+  return new Response(JSON.stringify({ success: true, todos }), {
+    headers: { 
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store, no-cache, must-revalidate"
+    }
+  });
 }
 
 // DELETE request -> remove a todo by id
@@ -73,5 +88,10 @@ export async function onRequestDelete(context) {
   }
 
   await context.env.TODO_KV.put("todos", JSON.stringify(todos));
-  return Response.json({ success: true, todos });
+  return new Response(JSON.stringify({ success: true, todos }), {
+    headers: { 
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store, no-cache, must-revalidate"
+    }
+  });
 }
